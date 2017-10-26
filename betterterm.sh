@@ -21,6 +21,15 @@
 
 #   Change Prompt
 #   ------------------------------------------------------------
+
+mkdir lib/
+
+if [ ! -f lib/git-completion.bash ]; then
+  curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > lib/git-completion.bash
+fi
+
+source lib/git-completion.bash
+
 function parse_git_branch() {
     BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     if [ ! "${BRANCH}" == "" ]
