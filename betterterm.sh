@@ -21,24 +21,31 @@
 
 #   Change Prompt
 #   ------------------------------------------------------------
-
-mkdir lib/
-
-if [ ! -f lib/git-completion.bash ]; then
-  curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > lib/git-completion.bash
+export VISUAL=vi
+if [ ! -f ~/lib/git-completion.bash ]; then
+  mkdir ~/lib/
+  curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/lib/git-completion.bash
 fi
 
-source lib/git-completion.bash
+source ~/lib/git-completion.bash
 
-function parse_git_branch() {
-    BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+function parse_git_branch()
+{
+  BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     if [ ! "${BRANCH}" == "" ]
     then
-        STAT=`parse_git_dirty`
-        echo "[${BRANCH}${STAT}]"
+        echo "${BRANCH}"
     else
         echo ""
     fi
+}
+
+function parse_git_branch_dirty() {
+  STAT=`parse_git_dirty`
+  BRANCH=`parse_git_branch`
+  if [ ! "${BRANCH}" == "" ]; then
+    echo "[${BRANCH}${STAT}]"
+  fi
 }
 
 # get current status of git repo
@@ -76,11 +83,11 @@ function parse_git_dirty {
     fi
 }
 
-export PS1="\[\e[34m\]\W\[\e[m\]\[\e[36m\]\`parse_git_branch\`\[\e[m\] \\$ "
+export PS1="\[\e[34m\]\W\[\e[m\]\[\e[36m\]\`parse_git_branch_dirty\`\[\e[m\] \\$ "
 #   Set Paths
 #   ------------------------------------------------------------
-    export PATH="$PATH:/usr/local/bin/"
-    export PATH="/usr/local/git/bin:/sw/bin/:/usr/local/bin:/usr/local/:/usr/local/sbin:/usr/local/mysql/bin:$PATH"
+    export PATH="/usr/local/bin/:/usr/local/Cellar/:$PATH"
+    export PATH="$PATH:/usr/local/git/bin:/sw/bin/:/usr/local/bin:/usr/local/:/usr/local/sbin:/usr/local/mysql/bin"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
